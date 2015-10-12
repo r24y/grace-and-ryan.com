@@ -84,5 +84,5 @@ gulp.task('watch:js', function watchJs(cb) {
 
 gulp.task('serve', serve('dist'));
 
-gulp.task('default', ['pages','styles']);
+gulp.task('default', ['pages','styles','javascript','copy:assets']);
 gulp.task('watch', ['watch:pages','watch:styles','watch:assets','watch:js','serve']);
