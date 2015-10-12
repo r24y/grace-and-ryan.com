@@ -1,0 +1,89 @@
+@import url(https://fonts.googleapis.com/css?family=Nixie+One|Libre+Baskerville);
+body {
+  background-color: #f0ead6;
+}
+.left-panel {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 40%;
+  color: rgba(255, 255, 255, 0.8);
+  background-color: #084B8A;
+  padding: 1em;
+  overflow: hidden;
+  box-shadow: inset -5em 0 3em -4em rgba(0, 0, 0, 0.3);
+  background-image: url(https://georgeruhe.files.wordpress.com/2011/04/capecodcolor_edited-1.jpg);
+  background-position: center;
+  background-size: cover;
+}
+.left-panel .names {
+  display: block;
+  font-family: 'Nixie One', serif;
+  font-size: 300%;
+  transform: skewY(-20deg);
+  width: 60%;
+  max-width: 5em;
+  z-index: 1000;
+  text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.5);
+}
+.left-panel .names a {
+  transition: color 500ms;
+  color: rgba(255, 255, 255, 0.8);
+}
+.left-panel .names a:hover,
+.left-panel .names a:active {
+  color: #F5F24C;
+}
+.left-panel .names a span {
+  display: block;
+}
+.left-panel .names a :nth-child(2) {
+  transition: border-top-color 500ms, border-bottom-color 500ms;
+  border-top: 1px solid rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  font-size: 40%;
+  text-align: center;
+  line-height: 1em;
+}
+.left-panel .names a:hover :nth-child(2) {
+  border-top-color: #F5F24C;
+  border-bottom-color: #F5F24C;
+}
+.left-panel .names a :nth-child(3) {
+  text-align: right;
+}
+.right-panel {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 60%;
+  right: 0;
+  overflow-x: hidden;
+}
+.right-panel > .inner {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: right;
+  padding: 1em;
+}
+.polaroid {
+  max-width: 15em;
+  max-height: 15em;
+  background-color: #eee;
+  position: absolute;
+  box-shadow: 0px 2px 3px black;
+  padding: .3em;
+  overflow: hidden;
+  z-index: 99;
+}
+.polaroid img {
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0;
+  margin-bottom: -5px;
+}
