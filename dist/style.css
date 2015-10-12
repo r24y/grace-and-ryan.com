@@ -54,6 +54,12 @@ body {
 .left-panel .names a :nth-child(3) {
   text-align: right;
 }
+.wedding-countdown {
+  text-align: right;
+}
+.wedding-countdown > .ui.statistics {
+  display: block;
+}
 .right-panel {
   position: fixed;
   top: 0;

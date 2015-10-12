@@ -62,7 +62,7 @@ function tick(photo) {
 }
 
 function isAlive(photo) {
-  return ((+new Date) - photo.createdAt) < 60e3;
+  return (photo.y - leftPanel.height) < 500;
 }
 
 class LeftPanel extends Component {
@@ -76,7 +76,6 @@ class LeftPanel extends Component {
   componentDidMount() {
     $.get('/images.json').then((sources) => {
       this.setState({sources});
-      console.log(this.state);
       this.interval = setInterval(this.addPhoto.bind(this), PHOTO_INTERVAL);
       this.addPhoto();
     });
@@ -98,11 +97,9 @@ class LeftPanel extends Component {
     this.setState({
       photos: this.state.photos.filter(isAlive).concat([photo])
     });
-    console.log('added photo', photo);
   }
   renderMenuItems() {
     return ([
-      "Welcome",
       "About us",
       "Proposal",
       "Ceremony",
@@ -155,16 +152,27 @@ class CountdownHeader extends Component {
   tick() {
     const now = (new Date);
     let diff = this.date - now;
-    const seconds = Math.floor((diff /= 1e3)%1e3);
-    const minutes = Math.floor((diff /= 60)%60);
-    const hours = Math.floor((diff /= 60)%60);
-    const days = Math.floor((diff/24)%24);
+    diff /= 1e3;
+    const seconds = Math.floor(diff % 60);
+    diff /= 60;
+    const minutes = Math.floor(diff % 60);
+    diff /= 60;
+    const hours = Math.floor(diff % 24);
+    diff /= 24;
+    const days = Math.floor(diff);
     this.setState({
-      status: `${days} ${hours}:${minutes}:${seconds}`
+      days, hours, minutes, seconds
     });
   }
   render() {
-    return (<span>{this.state.status}</span>);
+    return (<div className="ui statistics">
+      {
+        ['days','hours','minutes','seconds'].map(unit => <div key={unit} className="statistic">
+          <div className="value">{this.state[unit]}</div>
+          <div className="label">{unit}</div>
+        </div>)
+      }
+    </div>);
   }
 }
 

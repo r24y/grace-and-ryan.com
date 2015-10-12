@@ -22361,7 +22361,7 @@ function _tick(photo) {
 }
 
 function isAlive(photo) {
-  return +new Date() - photo.createdAt < 60e3;
+  return photo.y - leftPanel.height < 500;
 }
 
 var LeftPanel = (function (_Component3) {
@@ -22384,7 +22384,6 @@ var LeftPanel = (function (_Component3) {
 
       $.get('/images.json').then(function (sources) {
         _this.setState({ sources: sources });
-        console.log(_this.state);
         _this.interval = setInterval(_this.addPhoto.bind(_this), PHOTO_INTERVAL);
         _this.addPhoto();
       });
@@ -22413,12 +22412,11 @@ var LeftPanel = (function (_Component3) {
       this.setState({
         photos: this.state.photos.filter(isAlive).concat([photo])
       });
-      console.log('added photo', photo);
     }
   }, {
     key: 'renderMenuItems',
     value: function renderMenuItems() {
-      return ["Welcome", "About us", "Proposal", "Ceremony", "Reception", "Wedding party", "Registry", "The date"].map(function (name, i) {
+      return ["About us", "Proposal", "Ceremony", "Reception", "Wedding party", "Registry", "The date"].map(function (name, i) {
         return _react2['default'].createElement(MenuItem, { key: i, name: name });
       });
     }
@@ -22505,21 +22503,42 @@ var CountdownHeader = (function (_Component4) {
     value: function tick() {
       var now = new Date();
       var diff = this.date - now;
-      var seconds = Math.floor((diff /= 1e3) % 1e3);
-      var minutes = Math.floor((diff /= 60) % 60);
-      var hours = Math.floor((diff /= 60) % 60);
-      var days = Math.floor(diff / 24 % 24);
+      diff /= 1e3;
+      var seconds = Math.floor(diff % 60);
+      diff /= 60;
+      var minutes = Math.floor(diff % 60);
+      diff /= 60;
+      var hours = Math.floor(diff % 24);
+      diff /= 24;
+      var days = Math.floor(diff);
       this.setState({
-        status: days + ' ' + hours + ':' + minutes + ':' + seconds
+        days: days, hours: hours, minutes: minutes, seconds: seconds
       });
     }
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       return _react2['default'].createElement(
-        'span',
-        null,
-        this.state.status
+        'div',
+        { className: 'ui statistics' },
+        ['days', 'hours', 'minutes', 'seconds'].map(function (unit) {
+          return _react2['default'].createElement(
+            'div',
+            { key: unit, className: 'statistic' },
+            _react2['default'].createElement(
+              'div',
+              { className: 'value' },
+              _this2.state[unit]
+            ),
+            _react2['default'].createElement(
+              'div',
+              { className: 'label' },
+              unit
+            )
+          );
+        })
       );
     }
   }]);
