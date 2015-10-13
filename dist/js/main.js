@@ -22455,7 +22455,7 @@ var LeftPanel = (function (_Component3) {
             _react2['default'].createElement(
               'span',
               null,
-              'and'
+              '&'
             ),
             _react2['default'].createElement(
               'span',
@@ -22526,7 +22526,7 @@ var CountdownHeader = (function (_Component4) {
         ['days', 'hours', 'minutes', 'seconds'].map(function (unit) {
           return _react2['default'].createElement(
             'div',
-            { key: unit, className: 'statistic' },
+            { key: unit, className: 'ui mini statistic' },
             _react2['default'].createElement(
               'div',
               { className: 'value' },

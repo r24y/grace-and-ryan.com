@@ -123,7 +123,7 @@ class LeftPanel extends Component {
       <h1 className="names">
         <a href="#">
           <span>Grace</span>
-          <span>and</span>
+          <span>&</span>
           <span>Ryan</span>
         </a>
       </h1>
@@ -167,7 +167,7 @@ class CountdownHeader extends Component {
   render() {
     return (<div className="ui statistics">
       {
-        ['days','hours','minutes','seconds'].map(unit => <div key={unit} className="statistic">
+        ['days','hours','minutes','seconds'].map(unit => <div key={unit} className="ui mini statistic">
           <div className="value">{this.state[unit]}</div>
           <div className="label">{unit}</div>
         </div>)
