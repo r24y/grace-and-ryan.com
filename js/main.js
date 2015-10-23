@@ -22344,7 +22344,7 @@ function linterp(x_current, x_target) {
   return (1 - PHYSICS_COEFF) * x_current + PHYSICS_COEFF * x_target;
 }
 
-function _tick(photo) {
+function tick(photo) {
   var x = photo.x;
   var y = photo.y;
   var angle = photo.angle;
@@ -22361,8 +22361,10 @@ function _tick(photo) {
 }
 
 function isAlive(photo) {
-  return +new Date() - photo.createdAt < 60e3;
+  return photo.y - leftPanel.height < 500;
 }
+
+var FRAMES_BETWEEN_NEW_PHOTOS = PHOTO_INTERVAL / FRAME_DUR;
 
 var LeftPanel = (function (_Component3) {
   _inherits(LeftPanel, _Component3);
@@ -22372,7 +22374,9 @@ var LeftPanel = (function (_Component3) {
 
     _get(Object.getPrototypeOf(LeftPanel.prototype), 'constructor', this).call(this, props);
     this.state = {
-      photos: []
+      photos: [],
+      sources: [],
+      n: FRAMES_BETWEEN_NEW_PHOTOS + 1
     };
     this.fpsInterval = setInterval(this.tick.bind(this), FRAME_DUR);
   }
@@ -22383,10 +22387,11 @@ var LeftPanel = (function (_Component3) {
       var _this = this;
 
       $.get('/images.json').then(function (sources) {
-        _this.setState({ sources: sources });
-        console.log(_this.state);
-        _this.interval = setInterval(_this.addPhoto.bind(_this), PHOTO_INTERVAL);
-        _this.addPhoto();
+        _this.setState({
+          sources: sources.map(function (src) {
+            return { src: src, n: 0 };
+          })
+        });
       });
     }
   }, {
@@ -22400,25 +22405,31 @@ var LeftPanel = (function (_Component3) {
   }, {
     key: 'tick',
     value: function tick() {
-      this.setState({
-        photos: this.state.photos.map(_tick)
-      });
-    }
-  }, {
-    key: 'addPhoto',
-    value: function addPhoto() {
-      var sources = this.state.sources;
+      var _state = this.state;
+      var photos = _state.photos;
+      var n = _state.n;
+      var sources = _state.sources;
 
-      var photo = makePhoto(sources[Math.floor(Math.random() * sources.length)]);
+      var newPhotos = [];
+      if (n > FRAMES_BETWEEN_NEW_PHOTOS) {
+        n -= FRAMES_BETWEEN_NEW_PHOTOS;
+        n = n % 1;
+        var i = Math.floor(Math.random() * sources.length);
+        var _source = sources[i];
+        var src = _source.src;
+
+        newPhotos = [makePhoto(src)];
+        _source.n++;
+      }
       this.setState({
-        photos: this.state.photos.filter(isAlive).concat([photo])
+        n: n,
+        photos: this.state.photos.filter(isAlive).concat(newPhotos)
       });
-      console.log('added photo', photo);
     }
   }, {
     key: 'renderMenuItems',
     value: function renderMenuItems() {
-      return ["Welcome", "About us", "Proposal", "Ceremony", "Reception", "Wedding party", "Registry", "The date"].map(function (name, i) {
+      return ["About us", "Proposal", "Ceremony", "Reception", "Wedding party", "Registry", "The date"].map(function (name, i) {
         return _react2['default'].createElement(MenuItem, { key: i, name: name });
       });
     }
@@ -22457,7 +22468,7 @@ var LeftPanel = (function (_Component3) {
             _react2['default'].createElement(
               'span',
               null,
-              'and'
+              '&'
             ),
             _react2['default'].createElement(
               'span',
@@ -22505,21 +22516,42 @@ var CountdownHeader = (function (_Component4) {
     value: function tick() {
       var now = new Date();
       var diff = this.date - now;
-      var seconds = Math.floor((diff /= 1e3) % 1e3);
-      var minutes = Math.floor((diff /= 60) % 60);
-      var hours = Math.floor((diff /= 60) % 60);
-      var days = Math.floor(diff / 24 % 24);
+      diff /= 1e3;
+      var seconds = Math.floor(diff % 60);
+      diff /= 60;
+      var minutes = Math.floor(diff % 60);
+      diff /= 60;
+      var hours = Math.floor(diff % 24);
+      diff /= 24;
+      var days = Math.floor(diff);
       this.setState({
-        status: days + ' ' + hours + ':' + minutes + ':' + seconds
+        days: days, hours: hours, minutes: minutes, seconds: seconds
       });
     }
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       return _react2['default'].createElement(
-        'span',
-        null,
-        this.state.status
+        'div',
+        { className: 'ui statistics' },
+        ['days', 'hours', 'minutes', 'seconds'].map(function (unit) {
+          return _react2['default'].createElement(
+            'div',
+            { key: unit, className: 'ui mini statistic' },
+            _react2['default'].createElement(
+              'div',
+              { className: 'value' },
+              _this2.state[unit]
+            ),
+            _react2['default'].createElement(
+              'div',
+              { className: 'label' },
+              unit
+            )
+          );
+        })
       );
     }
   }]);

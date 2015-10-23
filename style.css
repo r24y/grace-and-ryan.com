@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Nixie+One|Libre+Baskerville);
+@import url(https://fonts.googleapis.com/css?family=Libre+Baskerville|Dancing+Script|Playfair+Display:700,900);
 body {
   background-color: #f0ead6;
 }
@@ -18,12 +18,12 @@ body {
   background-size: cover;
 }
 .left-panel .names {
-  display: block;
-  font-family: 'Nixie One', serif;
+  display: inline;
+  font-family: 'Dancing Script';
   font-size: 300%;
-  transform: skewY(-20deg);
+  transform: skewY(-10deg);
   width: 60%;
-  max-width: 5em;
+  max-width: 3em;
   z-index: 1000;
   text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.5);
 }
@@ -36,23 +36,30 @@ body {
   color: #F5F24C;
 }
 .left-panel .names a span {
-  display: block;
+  vertical-align: middle;
+  padding: 2px;
 }
 .left-panel .names a :nth-child(2) {
-  transition: border-top-color 500ms, border-bottom-color 500ms;
-  border-top: 1px solid rgba(255, 255, 255, 0.8);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+  font-family: 'Playfair Display';
+  font-weight: bold;
   text-transform: uppercase;
-  font-size: 40%;
+  font-size: 60%;
   text-align: center;
   line-height: 1em;
-}
-.left-panel .names a:hover :nth-child(2) {
-  border-top-color: #F5F24C;
-  border-bottom-color: #F5F24C;
+  padding-left: 7px;
 }
 .left-panel .names a :nth-child(3) {
   text-align: right;
+}
+.wedding-countdown {
+  text-align: right;
+}
+.wedding-countdown > .ui.statistics {
+  display: block;
+  padding-right: 2em;
+}
+.wedding-countdown > .ui.statistics .mini.statistic .value {
+  font-size: 1.3rem;
 }
 .right-panel {
   position: fixed;
