@@ -95,6 +95,7 @@ class LeftPanel extends Component {
     let newPhotos = [];
     if (n > FRAMES_BETWEEN_NEW_PHOTOS) {
       n -= FRAMES_BETWEEN_NEW_PHOTOS;
+      n = n % 1;
       const i = Math.floor(Math.random() * sources.length);
       const source = sources[i];
       const {src} = source;

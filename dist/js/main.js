@@ -22413,6 +22413,7 @@ var LeftPanel = (function (_Component3) {
       var newPhotos = [];
       if (n > FRAMES_BETWEEN_NEW_PHOTOS) {
         n -= FRAMES_BETWEEN_NEW_PHOTOS;
+        n = n % 1;
         var i = Math.floor(Math.random() * sources.length);
         var _source = sources[i];
         var src = _source.src;
