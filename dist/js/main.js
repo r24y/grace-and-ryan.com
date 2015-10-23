@@ -22344,7 +22344,7 @@ function linterp(x_current, x_target) {
   return (1 - PHYSICS_COEFF) * x_current + PHYSICS_COEFF * x_target;
 }
 
-function _tick(photo) {
+function tick(photo) {
   var x = photo.x;
   var y = photo.y;
   var angle = photo.angle;
@@ -22364,6 +22364,8 @@ function isAlive(photo) {
   return photo.y - leftPanel.height < 500;
 }
 
+var FRAMES_BETWEEN_NEW_PHOTOS = PHOTO_INTERVAL / FRAME_DUR;
+
 var LeftPanel = (function (_Component3) {
   _inherits(LeftPanel, _Component3);
 
@@ -22372,7 +22374,9 @@ var LeftPanel = (function (_Component3) {
 
     _get(Object.getPrototypeOf(LeftPanel.prototype), 'constructor', this).call(this, props);
     this.state = {
-      photos: []
+      photos: [],
+      sources: [],
+      n: FRAMES_BETWEEN_NEW_PHOTOS + 1
     };
     this.fpsInterval = setInterval(this.tick.bind(this), FRAME_DUR);
   }
@@ -22383,9 +22387,11 @@ var LeftPanel = (function (_Component3) {
       var _this = this;
 
       $.get('/images.json').then(function (sources) {
-        _this.setState({ sources: sources });
-        _this.interval = setInterval(_this.addPhoto.bind(_this), PHOTO_INTERVAL);
-        _this.addPhoto();
+        _this.setState({
+          sources: sources.map(function (src) {
+            return { src: src, n: 0 };
+          })
+        });
       });
     }
   }, {
@@ -22399,18 +22405,24 @@ var LeftPanel = (function (_Component3) {
   }, {
     key: 'tick',
     value: function tick() {
-      this.setState({
-        photos: this.state.photos.map(_tick)
-      });
-    }
-  }, {
-    key: 'addPhoto',
-    value: function addPhoto() {
-      var sources = this.state.sources;
+      var _state = this.state;
+      var photos = _state.photos;
+      var n = _state.n;
+      var sources = _state.sources;
 
-      var photo = makePhoto(sources[Math.floor(Math.random() * sources.length)]);
+      var newPhotos = [];
+      if (n > FRAMES_BETWEEN_NEW_PHOTOS) {
+        n -= FRAMES_BETWEEN_NEW_PHOTOS;
+        var i = Math.floor(Math.random() * sources.length);
+        var _source = sources[i];
+        var src = _source.src;
+
+        newPhotos = [makePhoto(src)];
+        _source.n++;
+      }
       this.setState({
-        photos: this.state.photos.filter(isAlive).concat([photo])
+        n: n,
+        photos: this.state.photos.filter(isAlive).concat(newPhotos)
       });
     }
   }, {

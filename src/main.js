@@ -65,19 +65,23 @@ function isAlive(photo) {
   return (photo.y - leftPanel.height) < 500;
 }
 
+const FRAMES_BETWEEN_NEW_PHOTOS = PHOTO_INTERVAL / FRAME_DUR;
+
 class LeftPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      photos: []
+      photos: [],
+      sources: [],
+      n: FRAMES_BETWEEN_NEW_PHOTOS + 1
     };
     this.fpsInterval = setInterval(this.tick.bind(this), FRAME_DUR);
   }
   componentDidMount() {
     $.get('/images.json').then((sources) => {
-      this.setState({sources});
-      this.interval = setInterval(this.addPhoto.bind(this), PHOTO_INTERVAL);
-      this.addPhoto();
+      this.setState({
+        sources: sources.map(src => ({src, n: 0}))
+      });
     });
   }
   componentWillUnmount() {
@@ -87,15 +91,19 @@ class LeftPanel extends Component {
     }
   }
   tick() {
+    let {photos, n, sources} = this.state;
+    let newPhotos = [];
+    if (n > FRAMES_BETWEEN_NEW_PHOTOS) {
+      n -= FRAMES_BETWEEN_NEW_PHOTOS;
+      const i = Math.floor(Math.random() * sources.length);
+      const source = sources[i];
+      const {src} = source;
+      newPhotos = [makePhoto(src)];
+      source.n++;
+    }
     this.setState({
-      photos: this.state.photos.map(tick)
-    });
-  }
-  addPhoto() {
-    const {sources} = this.state;
-    const photo = makePhoto(sources[Math.floor(Math.random()*sources.length)]);
-    this.setState({
-      photos: this.state.photos.filter(isAlive).concat([photo])
+      n,
+      photos: this.state.photos.filter(isAlive).concat(newPhotos),
     });
   }
   renderMenuItems() {
