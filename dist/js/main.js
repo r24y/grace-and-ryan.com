@@ -22344,7 +22344,7 @@ function linterp(x_current, x_target) {
   return (1 - PHYSICS_COEFF) * x_current + PHYSICS_COEFF * x_target;
 }
 
-function tick(photo) {
+function _tick(photo) {
   var x = photo.x;
   var y = photo.y;
   var angle = photo.angle;
@@ -22416,14 +22416,15 @@ var LeftPanel = (function (_Component3) {
         n = n % 1;
         var i = Math.floor(Math.random() * sources.length);
         var _source = sources[i];
+        if (!_source) return;
         var src = _source.src;
 
         newPhotos = [makePhoto(src)];
         _source.n++;
       }
       this.setState({
-        n: n,
-        photos: this.state.photos.filter(isAlive).concat(newPhotos)
+        n: n + 1,
+        photos: this.state.photos.filter(isAlive).concat(newPhotos).map(_tick)
       });
     }
   }, {

@@ -98,13 +98,14 @@ class LeftPanel extends Component {
       n = n % 1;
       const i = Math.floor(Math.random() * sources.length);
       const source = sources[i];
+      if (!source) return;
       const {src} = source;
       newPhotos = [makePhoto(src)];
       source.n++;
     }
     this.setState({
-      n,
-      photos: this.state.photos.filter(isAlive).concat(newPhotos),
+      n: n + 1,
+      photos: this.state.photos.filter(isAlive).concat(newPhotos).map(tick),
     });
   }
   renderMenuItems() {
