@@ -75,6 +75,10 @@ body {
   }
 }
 
+.map {
+  min-height: 200px;
+}
+
 .right-panel {
   position: fixed;
   top: 0;
@@ -90,7 +94,15 @@ body {
     right: 0;
     text-align: right;
     padding: 1em;
+    
+    p {
+    }
   }
+}
+
+blockquote {
+  border-right: 4px solid rgba(0,0,0,0.1);
+  padding-right: 1em;
 }
 
 .polaroid {
@@ -110,3 +122,16 @@ body {
     margin-bottom: -5px;
   }
 }
+
+a {
+  -webkit-transition: color .4s;
+  transition: color .4s;
+  color: #265C83;
+  text-decoration: none;
+}
+
+a:link, a:visited { color: #265C83; }
+
+a:hover { color: #7FDBFF; }
+
+a:active { -webkit-transition: color .3s; transition: color .3s; color: #007BE6; }

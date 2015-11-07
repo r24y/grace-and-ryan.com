@@ -1,5 +1,5 @@
 cd assets
-ls img/* | gawk '
+ls the-happy-couple/* | gawk '
     BEGIN { ORS = ""; print " [ "}
     /Filesystem/ {next}
     { printf "%s\"%s\"",
