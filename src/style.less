@@ -1,7 +1,11 @@
 // Import our fonts
 @import url(https://fonts.googleapis.com/css?family=Libre+Baskerville|Dancing+Script|Playfair+Display:700,900);
 
-@left-panel-size: 60%;
+@phone: ~"only screen and (max-width: 767px)";
+@notPhone: ~"only screen and (min-width: 768px)";
+
+@left-panel-size: 50%;
+@left-panel-size-phone: 30%;
 @ocean-blue: #084B8A;
 @sunflower-yellow: #F5F24C;
 
@@ -9,16 +13,24 @@ body {
   background-color: #f0ead6;
 }
 
+@transitionDur: 700ms;
+
 .left-panel {
-  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
-  right: (100% - @left-panel-size);
+  @media @notPhone {
+    position: fixed;
+    right: (100% - @left-panel-size);
+  }
+  @media @phone {
+    right: (100% - @left-panel-size-phone);
+  }
   @font-color: rgba(255,255,255,0.8);
   color: @font-color;
   background-color: @ocean-blue;
   padding: 1em;
+  transition: right @transitionDur;
   overflow: hidden;
   box-shadow: inset -5em 0 3em -4em rgba(0,0,0,0.3);
   background-image: url(https://georgeruhe.files.wordpress.com/2011/04/capecodcolor_edited-1.jpg);
@@ -27,7 +39,13 @@ body {
   .names {
     display: inline;
     font-family: 'Dancing Script';
-    font-size: 300%;
+    @media @notPhone {
+      font-size: 300%;
+    }
+    @media @phone {
+      font-size: 200%;
+    }
+    transition: font-size @transitionDur;
     transform: skewY(-10deg);
     width: 60%;
     max-width: 3em;
@@ -57,6 +75,24 @@ body {
       }
     }
   }
+  .secondary.inverted.ui.menu .item {
+    position: relative;
+    transition: font-size @transitionDur, color @transitionDur background-color @transitionDur;
+    @media @notPhone {
+      &.active {
+        color: @sunflower-yellow !important;
+        background-color: @ocean-blue;
+      }
+    }
+    @media @phone {
+      font-size: 70%;
+      color: white !important;
+      &.active {
+        color: @sunflower-yellow !important;
+        background-color: @ocean-blue;
+      }
+    }
+  }
 }
 
 .wedding-countdown {
@@ -76,22 +112,38 @@ body {
 }
 
 .map {
-  min-height: 200px;
+  min-height: 230px;
+}
+
+.ui.items {
+  text-align: left;
+}
+
+i[href] {
+  cursor: pointer;
 }
 
 .right-panel {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: @left-panel-size;
-  right: 0;
-  overflow-x: hidden;
-  > .inner {
-    position: absolute;
+  @media @notPhone {
+    position: fixed;
     top: 0;
     bottom: 0;
-    left: 0;
     right: 0;
+    left: @left-panel-size;
+  }
+  @media @phone {
+    position: relative;
+  }
+  transition: left @transitionDur;
+  overflow-x: hidden;
+  > .inner {
+    @media @notPhone {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
     text-align: right;
     padding: 1em;
     
@@ -103,9 +155,12 @@ body {
 blockquote {
   border-right: 4px solid rgba(0,0,0,0.1);
   padding-right: 1em;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .polaroid {
+  pointer-events: none;
   max-width: 15em;
   max-height: 15em;
   background-color: #eee;
@@ -114,12 +169,30 @@ blockquote {
   padding: .3em;
   overflow: hidden;
   z-index: 99;
+  @media @notPhone {
+    opacity: 1.0;
+  }
+  @media @phone {
+    opacity: 0.0;
+    display: none;
+  }
+  transition: opacity @transitionDur;
 
   img {
     max-width: 100%;
     max-height: 100%;
     margin: 0;
     margin-bottom: -5px;
+  }
+}
+
+.skinny {
+  transition: margin @transitionDur;
+  @media @notPhone {
+    margin: auto 5em;
+  }
+  @media @phone {
+    margin: auto 2.5em;
   }
 }
 

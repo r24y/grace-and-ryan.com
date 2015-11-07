@@ -8,7 +8,7 @@ kramed.setOptions({
 });
 
 const PHOTO_ANGLE_VARIANCE = 30;
-const PHOTO_INTERVAL = 5e3;
+const PHOTO_INTERVAL = 6.5e3;
 const FRAMERATE = 24;
 const SLIDE_SPEED = 60e-2;
 const PHYSICS_COEFF = 0.15;
@@ -28,17 +28,26 @@ class Polaroid extends Component {
   }
 }
 
+let href = document.location.href.replace(/^#/,'');
+
 class MenuItem extends Component {
+  onPropsChange(newProps) {
+    if (newProps.active !== this.props.active) {
+      this.setState({});
+    }
+  }
   render() {
     const bedashed = this.props.name.replace(/\s/g,'-').toLowerCase();
-    return (<a className="item" 
+    const className = `${href === bedashed ? 'active' : ''} item`;
+    return (<a className={className}
                onClick={(!this.props.href) && () => loadPage(bedashed)}
                href={this.props.href || '#' + bedashed}>{this.props.name}</a>);
   }
 }
 
 const CHURCH_LOCATION = [41.6662237, -70.1857255];
-const RECEPTION_LOCATION = [41.6516743,-70.1694562];
+const RECEPTION_LOCATION = [41.6516743, -70.1694562];
+const HOTEL_LOCATION = [41.6675045, -70.1874388];
 
 const callbacks = {
   ceremony() {
@@ -58,6 +67,15 @@ const callbacks = {
     Hydda_Full.addTo(map);
     const marker = L.marker(RECEPTION_LOCATION).addTo(map);
     marker.bindPopup('<a href="https://goo.gl/maps/qYi4LZAnndE2" target="_blank">' + $('blockquote').first().html() + '</a>').openPopup();
+  },
+  accommodations() {
+    const Hydda_Full = L.tileLayer('http://{s}.tile.openstreetmap.se/hydda/full/{z}/{x}/{y}.png', {
+      attribution: '<a href="http://openstreetmap.se/" target="_blank">Tiles</a> | <a href="http://www.openstreetmap.org/copyright">Map data</a>'
+    });
+    const map = L.map('map').setView(HOTEL_LOCATION, 16);
+    Hydda_Full.addTo(map);
+    const marker = L.marker(HOTEL_LOCATION).addTo(map);
+    marker.bindPopup('<a href="https://goo.gl/maps/NfLGHbVqbyk" target="_blank">' + $('blockquote').first().html() + '</a>').openPopup();
   }
 };
 
@@ -65,7 +83,16 @@ function loadPage(title) {
   console.log(`Loading ${title}`);
   document.location.hash = title;
   $.get(`content/${title}.md`).then(content => {
+    href = document.location.hash.replace(/^#/,'');
     $('#page-content').html(kramed(content));
+    $('#page-content a, #page-content i').filter(function () {
+      return (/^#/).test($(this).attr('href'));
+    }).each(function () {
+      const href = $(this).attr('href').replace(/^#/,'');
+      $(this).click(() => {
+        loadPage(href);
+      });
+    });
     if (callbacks[title]) {
       callbacks[title]();
     }
@@ -79,8 +106,8 @@ let n = 0;
 function makePhoto(src) {
   const targetAngle = Math.random() * PHOTO_ANGLE_VARIANCE - PHOTO_ANGLE_VARIANCE / 2;
   return {
-    targetX: (0.4 + Math.random() * 0.5) * leftPanel.width,
-    targetY: (Math.random() * 0.1) * leftPanel.height,
+    targetX: (Math.max(0.4, 300/leftPanel.width) + Math.random() * Math.max(0.5, 300 / leftPanel.width)) * leftPanel.width,
+    targetY: (Math.random() * 0.2) * leftPanel.height,
     targetAngle,
     x: 1200,
     y: (Math.random() * 0.5) * leftPanel.height,
@@ -118,7 +145,8 @@ class LeftPanel extends Component {
     this.state = {
       photos: [],
       sources: [],
-      n: FRAMES_BETWEEN_NEW_PHOTOS + 1
+      n: FRAMES_BETWEEN_NEW_PHOTOS + 1,
+      href: href
     };
     this.fpsInterval = setInterval(this.tick.bind(this), FRAME_DUR);
   }
@@ -138,15 +166,21 @@ class LeftPanel extends Component {
   tick() {
     let {photos, n, sources} = this.state;
     let newPhotos = [];
+    if (this.state.href !== href) {
+      this.setState({href});
+    }
     if (n > FRAMES_BETWEEN_NEW_PHOTOS) {
-      n -= FRAMES_BETWEEN_NEW_PHOTOS;
-      n = n % 1;
-      const i = Math.floor(Math.random() * sources.length);
-      const source = sources[i];
-      if (!source) return;
-      const {src} = source;
-      newPhotos = [makePhoto(src)];
-      source.n++;
+      // check window.width inside if block so we're not thrashing on _every_ tick
+      if ($(window).width() >= 768) {
+        n -= FRAMES_BETWEEN_NEW_PHOTOS;
+        n = n % 1;
+        const i = Math.floor(Math.random() * sources.length);
+        const source = sources[i];
+        if (!source) return;
+        const {src} = source;
+        newPhotos = [makePhoto(src)];
+        source.n++;
+      }
     }
     this.setState({
       n: n + 1,
@@ -155,14 +189,15 @@ class LeftPanel extends Component {
   }
   renderMenuItems() {
     return ([
-      //"About us",
-      //"Proposal",
+      //"Our story",
       "Ceremony",
       "Reception",
+      "Accommodations",
+      "Attractions",
       //"Wedding party",
       "Registry",
-      "The date"
-    ]).map((name,i) => (<MenuItem key={i} name={name}/>));
+      "Schedule of events"
+    ]).map((name,i) => (<MenuItem key={i} name={name} active={href === name.toLowerCase().replace(/\s/g,'-')}/>));
   }
   renderPhotos() {
     return this.state.photos.map(photo => (<div className="polaroid" style={{

@@ -23773,7 +23773,7 @@ _kramed2['default'].setOptions({
 });
 
 var PHOTO_ANGLE_VARIANCE = 30;
-var PHOTO_INTERVAL = 5e3;
+var PHOTO_INTERVAL = 6.5e3;
 var FRAMERATE = 24;
 var SLIDE_SPEED = 60e-2;
 var PHYSICS_COEFF = 0.15;
@@ -23808,6 +23808,8 @@ var Polaroid = (function (_Component) {
   return Polaroid;
 })(_react.Component);
 
+var href = document.location.href.replace(/^#/, '');
+
 var MenuItem = (function (_Component2) {
   _inherits(MenuItem, _Component2);
 
@@ -23818,12 +23820,20 @@ var MenuItem = (function (_Component2) {
   }
 
   _createClass(MenuItem, [{
+    key: 'onPropsChange',
+    value: function onPropsChange(newProps) {
+      if (newProps.active !== this.props.active) {
+        this.setState({});
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
       var bedashed = this.props.name.replace(/\s/g, '-').toLowerCase();
+      var className = (href === bedashed ? 'active' : '') + ' item';
       return _react2['default'].createElement(
         'a',
-        { className: 'item',
+        { className: className,
           onClick: !this.props.href && function () {
             return loadPage(bedashed);
           },
@@ -23838,6 +23848,7 @@ var MenuItem = (function (_Component2) {
 
 var CHURCH_LOCATION = [41.6662237, -70.1857255];
 var RECEPTION_LOCATION = [41.6516743, -70.1694562];
+var HOTEL_LOCATION = [41.6675045, -70.1874388];
 
 var callbacks = {
   ceremony: function ceremony() {
@@ -23857,6 +23868,15 @@ var callbacks = {
     Hydda_Full.addTo(map);
     var marker = L.marker(RECEPTION_LOCATION).addTo(map);
     marker.bindPopup('<a href="https://goo.gl/maps/qYi4LZAnndE2" target="_blank">' + $('blockquote').first().html() + '</a>').openPopup();
+  },
+  accommodations: function accommodations() {
+    var Hydda_Full = L.tileLayer('http://{s}.tile.openstreetmap.se/hydda/full/{z}/{x}/{y}.png', {
+      attribution: '<a href="http://openstreetmap.se/" target="_blank">Tiles</a> | <a href="http://www.openstreetmap.org/copyright">Map data</a>'
+    });
+    var map = L.map('map').setView(HOTEL_LOCATION, 16);
+    Hydda_Full.addTo(map);
+    var marker = L.marker(HOTEL_LOCATION).addTo(map);
+    marker.bindPopup('<a href="https://goo.gl/maps/NfLGHbVqbyk" target="_blank">' + $('blockquote').first().html() + '</a>').openPopup();
   }
 };
 
@@ -23864,7 +23884,17 @@ function loadPage(title) {
   console.log('Loading ' + title);
   document.location.hash = title;
   $.get('content/' + title + '.md').then(function (content) {
+    href = document.location.hash.replace(/^#/, '');
     $('#page-content').html((0, _kramed2['default'])(content));
+    $('#page-content a, #page-content i').filter(function () {
+      return (/^#/.test($(this).attr('href'))
+      );
+    }).each(function () {
+      var href = $(this).attr('href').replace(/^#/, '');
+      $(this).click(function () {
+        loadPage(href);
+      });
+    });
     if (callbacks[title]) {
       callbacks[title]();
     }
@@ -23878,8 +23908,8 @@ var n = 0;
 function makePhoto(src) {
   var targetAngle = Math.random() * PHOTO_ANGLE_VARIANCE - PHOTO_ANGLE_VARIANCE / 2;
   return {
-    targetX: (0.4 + Math.random() * 0.5) * leftPanel.width,
-    targetY: Math.random() * 0.1 * leftPanel.height,
+    targetX: (Math.max(0.4, 300 / leftPanel.width) + Math.random() * Math.max(0.5, 300 / leftPanel.width)) * leftPanel.width,
+    targetY: Math.random() * 0.2 * leftPanel.height,
     targetAngle: targetAngle,
     x: 1200,
     y: Math.random() * 0.5 * leftPanel.height,
@@ -23926,7 +23956,8 @@ var LeftPanel = (function (_Component3) {
     this.state = {
       photos: [],
       sources: [],
-      n: FRAMES_BETWEEN_NEW_PHOTOS + 1
+      n: FRAMES_BETWEEN_NEW_PHOTOS + 1,
+      href: href
     };
     this.fpsInterval = setInterval(this.tick.bind(this), FRAME_DUR);
   }
@@ -23961,16 +23992,22 @@ var LeftPanel = (function (_Component3) {
       var sources = _state.sources;
 
       var newPhotos = [];
+      if (this.state.href !== href) {
+        this.setState({ href: href });
+      }
       if (n > FRAMES_BETWEEN_NEW_PHOTOS) {
-        n -= FRAMES_BETWEEN_NEW_PHOTOS;
-        n = n % 1;
-        var i = Math.floor(Math.random() * sources.length);
-        var _source = sources[i];
-        if (!_source) return;
-        var src = _source.src;
+        // check window.width inside if block so we're not thrashing on _every_ tick
+        if ($(window).width() >= 768) {
+          n -= FRAMES_BETWEEN_NEW_PHOTOS;
+          n = n % 1;
+          var i = Math.floor(Math.random() * sources.length);
+          var _source = sources[i];
+          if (!_source) return;
+          var src = _source.src;
 
-        newPhotos = [makePhoto(src)];
-        _source.n++;
+          newPhotos = [makePhoto(src)];
+          _source.n++;
+        }
       }
       this.setState({
         n: n + 1,
@@ -23981,12 +24018,11 @@ var LeftPanel = (function (_Component3) {
     key: 'renderMenuItems',
     value: function renderMenuItems() {
       return [
-      //"About us",
-      //"Proposal",
-      "Ceremony", "Reception",
+      //"Our story",
+      "Ceremony", "Reception", "Accommodations", "Attractions",
       //"Wedding party",
-      "Registry", "The date"].map(function (name, i) {
-        return _react2['default'].createElement(MenuItem, { key: i, name: name });
+      "Registry", "Schedule of events"].map(function (name, i) {
+        return _react2['default'].createElement(MenuItem, { key: i, name: name, active: href === name.toLowerCase().replace(/\s/g, '-') });
       });
     }
   }, {
