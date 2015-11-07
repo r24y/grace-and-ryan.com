@@ -3,29 +3,49 @@ body {
   background-color: #f0ead6;
 }
 .left-panel {
-  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
-  right: 40%;
   color: rgba(255, 255, 255, 0.8);
   background-color: #084B8A;
   padding: 1em;
+  transition: right 700ms;
   overflow: hidden;
   box-shadow: inset -5em 0 3em -4em rgba(0, 0, 0, 0.3);
   background-image: url(https://georgeruhe.files.wordpress.com/2011/04/capecodcolor_edited-1.jpg);
   background-position: center;
   background-size: cover;
 }
+@media only screen and (min-width: 768px) {
+  .left-panel {
+    position: fixed;
+    right: 50%;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .left-panel {
+    right: 70%;
+  }
+}
 .left-panel .names {
   display: inline;
   font-family: 'Dancing Script';
-  font-size: 300%;
+  transition: font-size 700ms;
   transform: skewY(-10deg);
   width: 60%;
   max-width: 3em;
   z-index: 1000;
   text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.5);
+}
+@media only screen and (min-width: 768px) {
+  .left-panel .names {
+    font-size: 300%;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .left-panel .names {
+    font-size: 200%;
+  }
 }
 .left-panel .names a {
   transition: color 500ms;
@@ -51,6 +71,26 @@ body {
 .left-panel .names a :nth-child(3) {
   text-align: right;
 }
+.left-panel .secondary.inverted.ui.menu .item {
+  position: relative;
+  transition: font-size 700ms, color 700ms background-color 700ms;
+}
+@media only screen and (min-width: 768px) {
+  .left-panel .secondary.inverted.ui.menu .item.active {
+    color: #F5F24C !important;
+    background-color: #084B8A;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .left-panel .secondary.inverted.ui.menu .item {
+    font-size: 70%;
+    color: white !important;
+  }
+  .left-panel .secondary.inverted.ui.menu .item.active {
+    color: #F5F24C !important;
+    background-color: #084B8A;
+  }
+}
 .wedding-countdown {
   text-align: right;
 }
@@ -62,30 +102,53 @@ body {
   font-size: 1.3rem;
 }
 .map {
-  min-height: 200px;
+  min-height: 230px;
+}
+.ui.items {
+  text-align: left;
+}
+i[href] {
+  cursor: pointer;
 }
 .right-panel {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 60%;
-  right: 0;
+  transition: left 700ms;
   overflow-x: hidden;
 }
+@media only screen and (min-width: 768px) {
+  .right-panel {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 50%;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .right-panel {
+    position: relative;
+  }
+}
 .right-panel > .inner {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
   text-align: right;
   padding: 1em;
+}
+@media only screen and (min-width: 768px) {
+  .right-panel > .inner {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
 }
 blockquote {
   border-right: 4px solid rgba(0, 0, 0, 0.1);
   padding-right: 1em;
+  margin-left: 0;
+  margin-right: 0;
 }
 .polaroid {
+  pointer-events: none;
   max-width: 15em;
   max-height: 15em;
   background-color: #eee;
@@ -94,12 +157,37 @@ blockquote {
   padding: .3em;
   overflow: hidden;
   z-index: 99;
+  transition: opacity 700ms;
+}
+@media only screen and (min-width: 768px) {
+  .polaroid {
+    opacity: 1.0;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .polaroid {
+    opacity: 0.0;
+    display: none;
+  }
 }
 .polaroid img {
   max-width: 100%;
   max-height: 100%;
   margin: 0;
   margin-bottom: -5px;
+}
+.skinny {
+  transition: margin 700ms;
+}
+@media only screen and (min-width: 768px) {
+  .skinny {
+    margin: auto 5em;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .skinny {
+    margin: auto 2.5em;
+  }
 }
 a {
   -webkit-transition: color .4s;

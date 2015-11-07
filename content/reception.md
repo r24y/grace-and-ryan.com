@@ -1,7 +1,6 @@
-<img style="float:left; max-width: 60%; margin-bottom: 1em; margin-right: 1em;" src="img/lighthouse-inn.png">
-
 # Reception
 
+<img style="float:left; max-width: 60%; margin-bottom: 1em; margin-right: 1em;" src="img/lighthouse-inn.png">
 The reception will be held at the [Lighthouse Inn](http://www.lighthouseinn.com/).
 
 <div style="clear: both;"></div>
@@ -12,4 +11,4 @@ The reception will be held at the [Lighthouse Inn](http://www.lighthouseinn.com/
 </blockquote>
 <a class="red ui button" href="https://goo.gl/maps/qYi4LZAnndE2" target="_blank" style="float: right; margin-top: 1em;"><i class="marker icon"></i> View in Google Maps </a>
 
-<div class="map" id="map" style="min-height: 300px; clear: both;"></div>
+<div class="map" id="map" style="clear: both;"></div>
