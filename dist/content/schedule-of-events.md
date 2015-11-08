@@ -8,10 +8,10 @@
     <div class="content">
       <div class="summary">
         Rehearsal and dinner
-        <div class="date">7 PM</div>
+        <div class="date">6 PM</div>
       </div>
       <div class="extra text">
-        <p>Rehearsal at the church, followed by dinner at the <a href="https://goo.gl/maps/GKMZpf2LKgt">Yarmouth House</a></p>
+        <p>Rehearsal at the church at 6, followed by dinner at the <a href="https://goo.gl/maps/GKMZpf2LKgt">Yarmouth House</a> at 7.</p>
         <p><small>By invitation only.</small></p>
       </div>
     </div>
